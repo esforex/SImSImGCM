@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Camera_Activity"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:keepScreenOn="true"
+    android:clickable="false"
+    android:id="@+id/preview_layout"
+    android:weightSum="1"
+    android:background="#ff000000">
+
+
+
+    <Button
+        android:id="@+id/button_capture"
+        android:text="Capture"
+        android:layout_width="6dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:clickable="true"
+        android:onClick="capture"
+        tools:ignore="HardcodedText" />
+
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false" />
+
+</LinearLayout>

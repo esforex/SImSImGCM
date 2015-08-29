@@ -17,5 +17,7 @@
 <resources>
 
     <string name="app_name">SimSim Drive</string>
+    <string name="exit">Exit</string>
+
 
 </resources>

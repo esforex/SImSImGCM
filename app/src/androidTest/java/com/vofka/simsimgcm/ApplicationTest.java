@@ -1,4 +1,4 @@
-package com.vofka.simsimdrive;
+package com.vofka.simsimgcm;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

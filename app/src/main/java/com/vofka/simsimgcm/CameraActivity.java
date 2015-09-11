@@ -1,4 +1,4 @@
-package com.vofka.simsimdrive;
+package com.vofka.simsimgcm;
 
 /**
  * Created by ${vofka} on ${12/09/2014}.
@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.vofka.simsimdrive.R.id.camera_preview;
+import static com.vofka.simsimgcm.R.id.camera_preview;
 
 
 

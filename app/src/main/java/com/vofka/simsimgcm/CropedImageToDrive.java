@@ -1,11 +1,14 @@
-package com.vofka.simsimdrive;
+package com.vofka.simsimgcm;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
     //   private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
     private static final int REQUEST_CODE_CREATOR = 2;
     private static final int REQUEST_CODE_RESOLUTION = 3;
+    private static final int NO_NUM_DIALOG_ID=1;
     public String primary_sd = "";
     public String secondary_sd = "";
     public Bitmap bMap;
@@ -48,6 +52,7 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
     private ImageView imageView;
     private ImageView imageView1;
     private ImageView imageView2;
+    public String mPhoneNumber="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,7 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
      */
     private void saveFileToDrive() {
         // Start by creating a new contents, and setting a callback.
-        Log.i(TAG, "Creating new contents.");
+   //     Log.i(TAG, "Creating contents.");
         final Bitmap image = mBitmapToSave;
         Drive.DriveApi.newDriveContents(mGoogleApiClient)
                 .setResultCallback(new ResultCallback<DriveContentsResult>() {
@@ -72,11 +77,11 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
                         // and must
                         // fail.
                         if (!result.getStatus().isSuccess()) {
-                            Log.i(TAG, "Failed to create new contents.");
+                 //           Log.i(TAG, "Failed to create new contents.");
                             return;
                         }
                         // Otherwise, we can write our data to the new contents.
-                        Log.i(TAG, "New contents created.");
+            //            Log.i(TAG, "New contents created.");
                         // Get an output stream for the contents.
                         OutputStream outputStream = result.getDriveContents().getOutputStream();
                         // Write the bitmap data from it.
@@ -87,7 +92,7 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
                         try {
                             outputStream.write(bitmapStream.toByteArray());
                         } catch (IOException e1) {
-                            Log.i(TAG, "Unable to write file contents.");
+            //                Log.i(TAG, "Unable to write file contents.");
                         }
 
 
@@ -130,10 +135,32 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
                         return;
                     }
                     showMessage("Created a file with content: " + result.getDriveFile().getDriveId());
-                    finish();
+
+                    callForHelp();
+
+               //     intentMain();
+
+                    intentNoise();
+
+
                 }
 
             };
+
+    @SuppressWarnings("deprecation")
+    public void callForHelp() {
+        if (mPhoneNumber.length() == 0) {
+            showDialog(NO_NUM_DIALOG_ID);
+            return;
+        }
+        final Uri number = Uri.fromParts("tel", mPhoneNumber, "");
+        startActivity(new Intent(Intent.ACTION_CALL, number));
+    }
+
+    private void readApplicationPreferences() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mPhoneNumber = prefs.getString("alert_phone_number", null);
+    }
     /**
      * Shows a toast message.
      */
@@ -141,9 +168,24 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    public void intentMain() {
+        Intent intentMain;
+        intentMain = new Intent(this,MainActivity.class);
+        startActivity(intentMain);
+        finish();
+    }
+
+    public void intentNoise() {
+        Intent intentNoise;
+        intentNoise = new Intent(this,NoiseAlert.class);
+        startActivity(intentNoise);
+        finish();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        readApplicationPreferences();
         if (mGoogleApiClient == null) {
             // Create the API client and bind it to an instance variable.
             // We use this instance as the callback for connection and connection
@@ -171,7 +213,7 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         // Called whenever the API client fails to connect.
-        Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
+  //      Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
         if (!result.hasResolution()) {
             // show the localized error dialog.
             GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
@@ -184,13 +226,13 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
         try {
             result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
         } catch (SendIntentException e) {
-            Log.e(TAG, "Exception while starting resolution activity", e);
+    //        Log.e(TAG, "Exception while starting resolution activity", e);
         }
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "API client connected.");
+   //     Log.i(TAG, "API client connected.");
         if (mBitmapToSave == null) {
             // This activity has no UI of its own. Just start the camera.
             secondary_sd = System.getenv("SECONDARY_STORAGE");
@@ -209,6 +251,11 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
 
         }
         saveFileToDrive();
+
+
+
+    //    finish();
+
 
     }
 
@@ -242,6 +289,6 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
 
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.i(TAG, "GoogleApiClient connection suspended");
+     //   Log.i(TAG, "GoogleApiClient connection suspended");
     }
 }

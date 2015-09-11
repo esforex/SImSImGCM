@@ -1,4 +1,4 @@
-package com.vofka.simsimdrive;
+package com.vofka.simsimgcm;
 
 /**
  * Created by ${vofka} on ${12/09/2014}.

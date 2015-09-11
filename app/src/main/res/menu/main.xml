@@ -1,9 +1,7 @@
 <!--suppress AndroidDomInspection -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".CameraActivity" >
-
-    <item android:id="@+id/exit"
-        android:title="@string/exit"
-        android:showAsAction="always"/>
+    tools:context=".HelpActivity" >
+    <item  android:title="Exit" android:id="@+id/exit"></item>
+    <item android:title="@string/settings" android:id="@+id/settingsHelp"></item>
 </menu>

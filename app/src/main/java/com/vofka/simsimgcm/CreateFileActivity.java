@@ -1,4 +1,4 @@
-package com.vofka.simsimdrive;
+package com.vofka.simsimgcm;
 import android.os.Bundle;
 import android.util.Log;
 

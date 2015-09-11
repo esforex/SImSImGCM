@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Simsimdrive.iml" filepath="$PROJECT_DIR$/Simsimdrive.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SImSImGCM.iml" filepath="$PROJECT_DIR$/SImSImGCM.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/default.iml" filepath="$PROJECT_DIR$/default.iml" />
     </modules>
   </component>
 </project>
-

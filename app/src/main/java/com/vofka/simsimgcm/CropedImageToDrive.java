@@ -1,6 +1,7 @@
 package com.vofka.simsimgcm;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
@@ -9,6 +10,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -136,12 +140,7 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
                     }
                     showMessage("Created a file with content: " + result.getDriveFile().getDriveId());
 
-                    callForHelp();
-
-               //     intentMain();
-
-                    intentNoise();
-
+                   call();
 
                 }
 
@@ -153,9 +152,82 @@ public class CropedImageToDrive  extends Activity implements ConnectionCallbacks
             showDialog(NO_NUM_DIALOG_ID);
             return;
         }
+
         final Uri number = Uri.fromParts("tel", mPhoneNumber, "");
         startActivity(new Intent(Intent.ACTION_CALL, number));
     }
+
+    private void call()
+    {
+        if (mPhoneNumber.length() == 0) {
+            //noinspection deprecation
+            showDialog(NO_NUM_DIALOG_ID);
+            return;
+        }
+
+        PhoneCallListener phoneListener = new PhoneCallListener();
+        TelephonyManager telephonyManager = (TelephonyManager) this
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(phoneListener,
+                PhoneStateListener.LISTEN_CALL_STATE);
+
+        final Uri number = Uri.fromParts("tel", mPhoneNumber, "");
+        startActivity(new Intent(Intent.ACTION_CALL, number));
+
+    //    Intent callIntent = new Intent(Intent.ACTION_CALL);
+    //    callIntent.setData(Uri.parse("tel:87471265793"));
+    //    startActivity(callIntent);
+
+    }
+
+    private class PhoneCallListener extends PhoneStateListener {
+
+        private boolean isPhoneCalling = false;
+
+        String LOG_TAG = "LOGGING 123";
+
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+
+            if (TelephonyManager.CALL_STATE_RINGING == state) {
+                // phone ringing
+                Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
+            }
+
+            if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
+                // active
+                Log.i(LOG_TAG, "OFFHOOK");
+
+                isPhoneCalling = true;
+            }
+
+            if (TelephonyManager.CALL_STATE_IDLE == state) {
+                // run when class initial and phone call ended, need detect flag
+                // from CALL_STATE_OFFHOOK
+                Log.i(LOG_TAG, "IDLE");
+
+                if (isPhoneCalling) {
+
+                    Log.i(LOG_TAG, "restart app");
+
+                    // restart app
+
+                    intentNoise();
+              //     Intent i = getBaseContext().getPackageManager()
+             //              .getLaunchIntentForPackage(
+            //                        getBaseContext().getPackageName());
+             //       i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //        startActivity(i);
+
+                    isPhoneCalling = false;
+                }
+
+            }
+        }
+    }
+
+
+
 
     private void readApplicationPreferences() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
